@@ -3,11 +3,20 @@ import { open } from "@tauri-apps/api/dialog";
 
 let imagePath = "";
 let isAnimated = false;
+let pngButton = document.getElementById("#pngButton") as HTMLButtonElement;
+let gifButton = document.querySelector("#gifButton") as HTMLButtonElement;;
+let jpgButton = document.querySelector("#jpgButton") as HTMLButtonElement;;
 
 async function convertImage(fileType: string) {
   const pathParts = imagePath.split(".");
   const pathPrefix = pathParts.slice(0, pathParts.length - 1).join("");
   await invoke("convert_image", { path: imagePath, pathPrefix: pathPrefix, fileType: fileType });
+}
+
+async function convertAnimatedImage() {
+  const pathParts = imagePath.split(".");
+  const pathPrefix = pathParts.slice(0, pathParts.length - 1).join("");
+  await invoke("convert_animated_image", { path: imagePath, pathPrefix: pathPrefix });
 }
 
 async function openFile() {
@@ -44,27 +53,36 @@ function showImage(path: string) {
       return res.text();
     })
     .then((text) => {
-      // console.log(text.slice(0, 50))
       const headerSlice = text.slice(0, 50);
       if (headerSlice.includes("ANIM") && headerSlice.includes("ANMF")) {
         isAnimated = true;
+        setAvailableConversions();
       }
-      // console.log(isAnimated);
     })
 }
 
+function setAvailableConversions() {
+  if (isAnimated && pngButton && jpgButton) {
+    pngButton.disabled = true;
+    jpgButton.disabled = true;
+  } else {
+    pngButton.disabled = false;
+    jpgButton.disabled = false;
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
+  pngButton = document.getElementById("pngButton") as HTMLButtonElement;
+  gifButton = document.getElementById("gifButton") as HTMLButtonElement;
+  jpgButton = document.getElementById("jpgButton") as HTMLButtonElement;
+
   document
     .querySelector("#pathButton")
     ?.addEventListener("click", () => openFile());
 
-  document
-    .querySelector("#pngButton")
-    ?.addEventListener("click", () => convertImage(".png"));
-  document
-    .querySelector("#gifButton")
-    ?.addEventListener("click", () => convertImage(".gif"));
-  document
-    .querySelector("#jpgButton")
-    ?.addEventListener("click", () => convertImage(".jpg"));
+  pngButton?.addEventListener("click", () => convertImage(".png"));
+  gifButton?.addEventListener("click", () => {
+    isAnimated ? convertAnimatedImage() : convertImage(".gif");
+  });
+  jpgButton?.addEventListener("click", () => convertImage(".jpg"));
 });

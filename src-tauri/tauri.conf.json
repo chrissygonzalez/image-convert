@@ -32,8 +32,8 @@
     "windows": [
       {
         "title": "WebP Converter",
-        "width": 600,
-        "height": 400
+        "width": 500,
+        "height": 450
       }
     ],
     "security": {

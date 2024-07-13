@@ -20,11 +20,11 @@ body {
 
 .container {
   margin: 0;
-  /* padding-top: 10vh; */
   display: flex;
   flex-direction: row;
   justify-content: center;
   text-align: center;
+  gap: 10px;
 }
 
 input,
@@ -59,6 +59,17 @@ button {
   outline: none;
 }
 
+button:disabled {
+  cursor: auto;
+  background-color: #ccc;
+  box-shadow: none;
+}
+
+button:disabled:hover {
+  transition: none;
+  border-color: transparent;
+}
+
 #preview {
   height: 300px;
   max-width: 300px;
@@ -84,8 +95,8 @@ section {
 }
 
 #pathButton {
-  position: absolute;
-  z-index: 0;
+  /* position: absolute;
+  z-index: 0; */
 }
 
 #image {
